@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction History</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+            transition: background-color 0.3s;
+        }
+
+        .fake-result {
+            color: #f5576c;
+            font-weight: 600;
+        }
+
+        .real-result {
+            color: #00f2fe;
+            font-weight: 600;
+        }
+
+        .news-preview {
+            max-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .empty-state a {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="history-header">
+        <div>
+            <h1>📜 Prediction History</h1>
+            {% if logged_in %}
+                <p style="color:#555; font-size:0.95em; margin-top:5px;">Signed in as {{ username }}</p>
+            {% endif %}
+        </div>
+        <div>
+            <a href="/" class="back-btn">← Back to Detector</a>
+            <a href="/logout" class="back-btn" style="margin-left:12px;">Logout</a>
+        </div>
+    </div>
+
+    {% if data %}
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 10%;">ID</th>
+                    <th style="width: 60%;">News Article</th>
+                    <th style="width: 30%;">Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>#{{ row[0] }}</td>
+                    <td><div class="news-preview">{{ row[1] }}</div></td>
+                    <td>
+                        <span class="{% if 'Fake' in row[2] %}fake-result{% else %}real-result{% endif %}">
+                            {{ row[2] }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <h3>No predictions yet</h3>
+            <p>Start analyzing news articles to build your prediction history</p>
+            <a href="/">Start Analyzing</a>
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
+

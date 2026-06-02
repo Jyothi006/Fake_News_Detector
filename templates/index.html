@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake News Detector</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>📰 Fake News Detection</h1>
+    <p style="text-align: center; color: #666; font-size: 1.1em; margin-bottom: 6px;">
+        AI-Powered News Authenticity Checker
+    </p>
+    <p style="text-align: center; color: #4b5563; font-size: 0.95em; margin-bottom: 30px; font-style: italic;">
+        “In a world of echo chambers, truth is the most powerful news.”
+    </p>
+
+    <div class="header-actions">
+        {% if logged_in %}
+            <span>Welcome, {{ username }}!</span>
+            <a href="/detect">🔍 Analyze News</a>
+            <a href="/history">📜 History</a>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/logout">🚪 Logout</a>
+        {% else %}
+            <a href="/login">🔐 Login</a>
+            <a href="/register">➕ Register</a>
+        {% endif %}
+    </div>
+
+    {% if logged_in %}
+        <div class="alert success">
+            Welcome back, {{ username }}! Use the Analyze News button above to open the detection tool.
+        </div>
+    {% endif %}
+
+    {% if logged_in %}
+        <div class="auth-instructions">
+            <p>Click the Analyze News button to submit an article for fake news detection.</p>
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

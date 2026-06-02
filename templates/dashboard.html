@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Fake News AI</h2>
+
+    <a href="/">Home</a>
+    <a href="/history">History</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="main">
+
+    <h1>Dashboard</h1>
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>{{ total }}</h2>
+            <p>Total Predictions</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ real }}</h2>
+            <p>Real News</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ fake }}</h2>
+            <p>Fake News</p>
+        </div>
+
+        {% if accuracy is not none %}
+        <div class="card">
+            <h2>{{ (accuracy * 100)|round(2) }}%</h2>
+            <p>Model Accuracy</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <div class="chart-row">
+        <div class="chart-card">
+            <h2>Prediction Distribution</h2>
+            <canvas id="predictionChart"></canvas>
+        </div>
+
+        {% if prediction_dates %}
+        <div class="chart-card">
+            <h2>Prediction Trend</h2>
+            <canvas id="trendChart"></canvas>
+        </div>
+        {% endif %}
+
+        {% if accuracy is not none %}
+        <div class="chart-card">
+            <h2>Training Metrics</h2>
+            <canvas id="accuracyChart"></canvas>
+            <div class="metric-list">
+                <div><strong>Training samples:</strong> {{ training_samples }}</div>
+                <div><strong>Fake samples:</strong> {{ fake_samples }}</div>
+                <div><strong>Real samples:</strong> {{ real_samples }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if tn is not none %}
+        <div class="chart-card matrix-card">
+            <h2>Confusion Matrix</h2>
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Predicted Fake</th>
+                        <th>Predicted Real</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Actual Fake</strong></td>
+                        <td>{{ tn }}</td>
+                        <td>{{ fp }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Actual Real</strong></td>
+                        <td>{{ fn }}</td>
+                        <td>{{ tp }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const predictionCtx = document.getElementById('predictionChart');
+    if (predictionCtx) {
+        new Chart(predictionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Real News', 'Fake News'],
+                datasets: [{
+                    data: [{{ real }}, {{ fake }}],
+                    backgroundColor: ['#4facfe', '#f5576c'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    const trendCtx = document.getElementById('trendChart');
+    if (trendCtx) {
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: [{% for label in prediction_dates %}'{{ label }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Predictions',
+                    data: [{{ prediction_counts|join(', ') }}],
+                    borderColor: '#22c55e',
+                    backgroundColor: 'rgba(34, 197, 94, 0.15)',
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#16a34a'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    {% if accuracy is not none %}
+    const accuracyCtx = document.getElementById('accuracyChart');
+    if (accuracyCtx) {
+        new Chart(accuracyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Model Accuracy'],
+                datasets: [{
+                    label: 'Accuracy',
+                    data: [{{ (accuracy * 100)|round(2) }}],
+                    backgroundColor: ['#667eea'],
+                    borderColor: ['#4c51bf'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) { return value + '%'; }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+    {% endif %}
+</script>
+
+</body>
+</html>

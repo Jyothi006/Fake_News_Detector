@@ -1,0 +1,8 @@
+# Ignore dataset files
+*.csv
+
+# Ignore database files
+*.db
+
+# Ignore model files
+*.pkl

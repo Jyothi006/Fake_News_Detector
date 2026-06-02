@@ -1,0 +1,10 @@
+{
+  "accuracy": 0.9869710467706013,
+  "training_samples": 44898,
+  "real_samples": 21417,
+  "fake_samples": 23481,
+  "tn": 4620,
+  "fp": 76,
+  "fn": 41,
+  "tp": 4243
+}

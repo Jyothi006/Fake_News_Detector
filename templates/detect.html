@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analyze News - Fake News Detector</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>🔍 Analyze News</h1>
+
+    <div class="header-actions">
+        <a href="/">🏠 Home</a>
+        <a href="/history">📜 History</a>
+        <a href="/dashboard">📊 Dashboard</a>
+        <a href="/logout">🚪 Logout</a>
+    </div>
+
+    <form action="/predict" method="POST">
+        <textarea
+            name="news"
+            rows="12"
+            placeholder="Paste your news article here and let AI analyze its authenticity..."
+            required></textarea>
+
+        <button type="submit">Analyze News</button>
+    </form>
+
+    {% if prediction %}
+        <div class="result {% if 'Fake' in prediction %}fake{% else %}real{% endif %}">
+            <h2>{{ prediction }}</h2>
+            <p style="margin-top: 15px; font-size: 0.95em;">
+                Confidence: {{ confidence_real }}% Real, {{ confidence_fake }}% Fake
+            </p>
+            <p style="margin-top: 15px; font-size: 0.95em;">Analysis complete. Check the history for all your predictions.</p>
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
