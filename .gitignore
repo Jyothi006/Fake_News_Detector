@@ -1,8 +1,12 @@
-# Ignore dataset files
+# Ignore datasets and models
 *.csv
-
-# Ignore database files
+*.pkl
 *.db
 
-# Ignore model files
-*.pkl
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore environment folders
+venv/
+.env
